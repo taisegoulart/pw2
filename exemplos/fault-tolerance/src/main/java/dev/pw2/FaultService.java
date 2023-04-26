@@ -30,7 +30,7 @@ public class FaultService {
     /* Coloca no console as mensagens de erro */
     private static final Logger LOGGER = Logger.getLogger(FaultService.class.getName());
 
-    private static final String FALL_BACK_MESSAGE = "FallbackMethod: ";
+    private static final String FALL_BACK_MESSAGE = "FallbackMethod (posso mudar a mensagem aqui): ";
 
     @GET
     @Path("/{name}")
@@ -49,6 +49,7 @@ public class FaultService {
         // }
 
         if (name.equalsIgnoreCase("error")) {
+            System.out.println("testando!"); //ir no thunderclient, GET http://localhost:8080/fault/error e perceber que o "testando" aparece 4x
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
             builder.status(Response.Status.INTERNAL_SERVER_ERROR);
             builder.entity("The requested was an error");
@@ -84,7 +85,7 @@ public class FaultService {
     @GET
     @Path("/bulkhead/{name}")
     @Produces(MediaType.TEXT_PLAIN)
-    @Bulkhead(2)
+    @Bulkhead(2)//indica que o limite de até duas requisições simultêneas é permitido, adicionais serão descartadas, pode-se usar o parâmetro "waitingTaskQueue" para liitar também o nº de requisições esperando a liberação
     public String bulkhead(@PathParam("name") String name) {
         LOGGER.info(name);
         return name;
@@ -98,5 +99,8 @@ public class FaultService {
     private void sleep() throws InterruptedException {
         Thread.sleep(10000);
     }
+
+
+    /**Exemplo sobre o K6 --> é necessário ter o node.js instalado. Ir no diretório k6.js aqui deste projeto! ^-^  --> instalar o k6, seguir os passos da documentação k6.io, depois dentro da pasta executar o comando "k6 run k6.js*/
 
 }
